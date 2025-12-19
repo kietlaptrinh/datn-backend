@@ -11,8 +11,14 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"]
+    // Cho phép cả localhost và link vercel
+    origin: [
+        "http://localhost:5173", 
+        "https://datn-frontend-1.vercel.app", 
+        "https://datn-frontend.vercel.app"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true // Thêm dòng này cho chắc
   }
 });
 
