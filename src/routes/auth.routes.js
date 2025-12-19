@@ -5,7 +5,7 @@ import {
   getCurrentUser,
   logout,
 } from "../controllers/auth.controller.js";
-
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 const router = Router();
 router.get(
   "/google",
@@ -14,7 +14,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/login",
+    failureRedirect: `${CLIENT_URL}/login`,
   }),
   googleCallbackSuccess
 );
