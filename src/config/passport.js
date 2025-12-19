@@ -9,6 +9,8 @@ const User = models.User;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
+
 const adminEmailsEnv = process.env.ADMIN_EMAILS || "";
 const ADMIN_EMAILS = adminEmailsEnv
     .split(',')
@@ -22,7 +24,8 @@ if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/auth/google/callback'
+    callbackURL: `${BACKEND_URL}/api/auth/google/callback`,
+    proxy: true
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
