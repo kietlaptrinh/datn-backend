@@ -19,21 +19,33 @@ import { connectMongo } from "./config/db.mongo.js";
 import "dotenv/config";
 
 const app = express();
-
+const allowedOrigins = [
+  "http://localhost:5173",                  // Localhost của bạn
+  "https://datn-frontend-1.vercel.app",     // Link Vercel (bạn xem kỹ link vercel của bạn là gì điền vào đây)
+  "https://datn-frontend.vercel.app"        // Link dự phòng
+];
 app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true, // Cho phép gửi cookie qua lại
+  origin: function (origin, callback) {
+    // Cho phép request không có origin (như Postman, Server-to-Server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error('CORS Policy: Domain not allowed'), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // Cho phép cookie
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }));
 app.use(express.json());
 app.use(morgan("dev"));
-
+app.set("trust proxy", 1);
 app.use(session({
   secret: process.env.SESSION_SECRET || "iuytrdsdfghjmnbvcxzytrewhgfdejhgfdytrenbvcwsdxiu",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
+    secure: process.env.NODE_ENV === 'production' ? true : false,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000, // 1 ngày
     httpOnly: true,
   }
