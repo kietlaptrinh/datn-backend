@@ -1,8 +1,10 @@
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+
 export const googleCallbackSuccess = (req, res) => {
   if (req.user && req.user.role === 'admin') {
-    res.redirect('http://localhost:5173/dashboard'); 
+    res.redirect(`${CLIENT_URL}/dashboard`);
   } else {
-    res.redirect('http://localhost:5173/learning');
+    res.redirect(`${CLIENT_URL}/learning`);
   }
 };
 
@@ -18,6 +20,6 @@ export const getCurrentUser = (req, res) => {
 export const logout = (req, res, next) => {
   req.logout(function(err) {
     if (err) { return next(err); }
-    res.redirect('http://localhost:5173/');
+    res.redirect(`${CLIENT_URL}/`);
   });
 };
